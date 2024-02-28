@@ -1,9 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
 
+const { getAccessToken } = require("./utils");
+
 const app = express();
 
-const port = 3000;
+const port = 8080;
 
 app.use(morgan("common"));
 
@@ -49,19 +51,29 @@ app.get("/number_answer_url", (req, res) => {
             action: "connect",
             from: {
                 type: "external",
-                number: `'${from}'`,
-                alias: `'${from}'`,
+                number: from,
+                alias: from,
             },
             to: {
                 type: "internal",
-                number: `'${callTo}'`,
-                alias: `'${to}'`,
+                number: callTo,
+                alias: to,
             },
             customData: "test-custom-data",
         },
     ];
 
     return res.json(scco);
+});
+
+app.get("/access_token", (req, res) => {
+    const { userId } = req.query;
+
+    const token = getAccessToken(userId);
+
+    return res.json({
+        data: token,
+    });
 });
 
 app.listen(port, () => {
