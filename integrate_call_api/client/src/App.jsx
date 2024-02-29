@@ -231,7 +231,7 @@ function App() {
                     disabled={!forwardTo}
                     onChange={(e) => {
                         const checked = e.target.checked;
-                        axiosClient.post("/toggle-forward-number", {
+                        axiosClient.post("/toggle_forward_number", {
                             number: checked ? forwardTo : "",
                             disabled: !checked,
                         });

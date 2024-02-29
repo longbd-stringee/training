@@ -107,7 +107,7 @@ const initRoute = (app) => {
         });
     });
 
-    app.post("/toggle-forward-number", (req, res) => {
+    app.post("/toggle_forward_number", (req, res) => {
         const { number, disabled } = req.body;
 
         state.isForwarded = !disabled;
