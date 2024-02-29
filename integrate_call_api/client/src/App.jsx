@@ -144,19 +144,18 @@ function App() {
 
     if (!accessToken) {
         return (
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label htmlFor="userId">User id:</label>
-                    <input
-                        id="userId"
-                        type="text"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <button type="submit">Login</button>
-                </div>
+            <form
+                onSubmit={handleLogin}
+                style={{ display: "flex", gap: "8px" }}
+            >
+                <label htmlFor="userId">User id:</label>
+                <input
+                    id="userId"
+                    type="text"
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
+                />
+                <button type="submit">Login</button>
             </form>
         );
     }
@@ -180,7 +179,8 @@ function App() {
                 ></video>
                 <p id="callStatus"></p>
             </div>
-            <div>
+            <div style={{ display: "flex", gap: "8px" }}>
+                <label htmlFor="phone-input">Phone number:</label>
                 <input
                     type="text"
                     id="phone-input"
@@ -196,8 +196,10 @@ function App() {
                 </button>
             </div>
 
-            <div>
+            <div style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
+                <label htmlFor="user-id">User id:</label>
                 <input
+                    id="user-id"
                     type="text"
                     value={toUserId}
                     onChange={(e) => setToUserId(e.target.value)}
@@ -218,7 +220,7 @@ function App() {
                 </button>
             </div>
 
-            <div>
+            <div style={{ marginTop: "12px" }}>
                 <button
                     onClick={() => {
                         if (call.current) {
