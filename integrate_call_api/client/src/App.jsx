@@ -37,62 +37,50 @@ function App() {
         axiosClient
             .get(`/access_token?userId=${userId}`)
             .then((res) => {
-                setTimeout(() => {
-                    setAccessToken(res.data);
-                }, 7000);
+                setAccessToken(res.data);
             })
             .catch(() => {
                 alert("Login failed");
             });
     };
 
-    const handleHangUp = useCallback(() => {
-        const userId = window.localStorage.getItem("userId");
-        axiosClient.post("/hang-up", { userId }).then(console.log);
-    }, []);
-
     const handleDisconnect = useCallback(() => {
         const userId = window.localStorage.getItem("userId");
         axiosClient.post("/disconnect", { userId }).then(console.log);
     }, []);
 
-    const settingCallEvent = useCallback(
-        (call1) => {
-            call1.on("addremotestream", function (stream) {
-                // reset srcObject to work around minor bugs in Chrome and Edge.
-                remoteVideo.current.srcObject = null;
-                remoteVideo.current.srcObject = stream;
-            });
+    const settingCallEvent = useCallback((call1) => {
+        call1.on("addremotestream", function (stream) {
+            // reset srcObject to work around minor bugs in Chrome and Edge.
+            remoteVideo.current.srcObject = null;
+            remoteVideo.current.srcObject = stream;
+        });
 
-            call1.on("addlocalstream", function (stream) {
-                // reset srcObject to work around minor bugs in Chrome and Edge.
-                console.log("addlocalstream");
-                localVideo.current.srcObject = null;
-                localVideo.current.srcObject = stream;
-            });
+        call1.on("addlocalstream", function (stream) {
+            // reset srcObject to work around minor bugs in Chrome and Edge.
+            console.log("addlocalstream");
+            localVideo.current.srcObject = null;
+            localVideo.current.srcObject = stream;
+        });
 
-            call1.on("signalingstate", function (state) {
-                console.log("signalingstate ", state);
-                const { reason, code } = state;
-                if (code === 5) {
-                    handleHangUp();
-                }
-                document.querySelector("#callStatus").textContent = reason;
-            });
+        call1.on("signalingstate", function (state) {
+            console.log("signalingstate ", state);
+            const { reason } = state;
+            document.querySelector("#callStatus").textContent = reason;
+        });
 
-            call1.on("mediastate", function (state) {
-                console.log("mediastate ", state);
-            });
+        call1.on("mediastate", function (state) {
+            console.log("mediastate ", state);
+        });
 
-            call1.on("info", function (info) {
-                console.log("on info:" + JSON.stringify(info));
-            });
-        },
-        [handleHangUp]
-    );
+        call1.on("info", function (info) {
+            console.log("on info:" + JSON.stringify(info));
+        });
+    }, []);
 
     const handleCallAppToPhone = () => {
         call.current = new StringeeCall(client, hotline, phoneNumber, false);
+        console.log("🚀 ~ call.current:", call.current);
 
         settingCallEvent(call.current);
         call.current.makeCall(function (res) {
@@ -146,13 +134,12 @@ function App() {
                     console.log("answer res", res);
                 });
             } else {
-                handleHangUp();
                 call.current.reject(function (res) {
                     console.log("reject res", res);
                 });
             }
         });
-    }, [handleDisconnect, handleHangUp, settingCallEvent]);
+    }, [handleDisconnect, settingCallEvent]);
 
     if (!accessToken) {
         return (
@@ -227,6 +214,18 @@ function App() {
                     onClick={() => handleCallAppToApp(true)}
                 >
                     Call app - app (Video)
+                </button>
+            </div>
+
+            <div>
+                <button
+                    onClick={() => {
+                        if (call.current) {
+                            call.current.hangup();
+                        }
+                    }}
+                >
+                    Hang up
                 </button>
             </div>
         </div>

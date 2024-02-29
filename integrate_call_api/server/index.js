@@ -9,12 +9,9 @@ const app = express();
 const port = 8080;
 
 let userIds = [];
-let busyUserIds = [];
 
 const getAvailableUserId = () => {
-    const ids = userIds.filter((id) => !busyUserIds.includes(id));
-
-    return ids.length ? ids[0] : null;
+    return userIds[0];
 };
 
 app.use(cors({ origin: "*" }));
@@ -22,18 +19,16 @@ app.use(morgan("common"));
 app.use(express.json());
 
 app.get("/project_answer_url", (req, res) => {
-    let { from, to, userId } = req.query;
+    let { from, to, fromInternal } = req.query;
     from = decodeURIComponent(from);
     to = decodeURIComponent(to);
 
     const toType = !to.startsWith("84") ? "internal" : "external";
 
-    busyUserIds.push(userId);
-
     const connectAction = {
         action: "connect",
         from: {
-            type: "internal",
+            type: fromInternal === "true" ? "internal" : "external",
             number: from,
             alias: from,
         },
@@ -49,15 +44,11 @@ app.get("/project_answer_url", (req, res) => {
 });
 
 app.get("/answer_url", (req, res) => {
-    const { userId, from, to } = req.query;
+    const { userId, from, to, fromInternal } = req.query;
 
     let callTo = userId;
-    if (!callTo || busyUserIds.includes(callTo)) {
+    if (!callTo) {
         callTo = getAvailableUserId();
-    }
-
-    if (callTo) {
-        busyUserIds.push(callTo);
     }
 
     // const scco = [
@@ -81,7 +72,7 @@ app.get("/answer_url", (req, res) => {
         {
             action: "connect",
             from: {
-                type: "external",
+                type: fromInternal === "true" ? "internal" : "external",
                 number: from,
                 alias: from,
             },
@@ -97,6 +88,22 @@ app.get("/answer_url", (req, res) => {
     return res.json(scco);
 });
 
+app.post("/project_event_url", (req, res) => {
+    // console.log("🚀 ~ project_event_url:", req.body);
+
+    return res.json({
+        data: true,
+    });
+});
+
+app.post("/event_url", (req, res) => {
+    // console.log("🚀 ~ event_url:", req.body);
+
+    return res.json({
+        data: true,
+    });
+});
+
 app.get("/access_token", (req, res) => {
     const { userId } = req.query;
 
@@ -109,20 +116,9 @@ app.get("/access_token", (req, res) => {
     });
 });
 
-app.post("/hang-up", (req, res) => {
-    const { userId } = req.body;
-
-    busyUserIds = busyUserIds.filter((id) => id !== userId);
-
-    return res.json({
-        data: true,
-    });
-});
-
 app.post("/disconnect", (req, res) => {
     const { userId } = req.body;
 
-    busyUserIds = busyUserIds.filter((id) => id !== userId);
     userIds = userIds.filter((id) => id !== userId);
 
     return res.json({
