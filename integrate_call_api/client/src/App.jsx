@@ -26,6 +26,7 @@ function App() {
     const [userId, setUserId] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [toUserId, setToUserId] = useState("");
+    const [forwardTo, setForwardTo] = useState("84819287888");
 
     const remoteVideo = useRef(null);
     const localVideo = useRef(null);
@@ -227,6 +228,26 @@ function App() {
                 >
                     Hangup
                 </button>
+            </div>
+
+            <div style={{ marginTop: "24px" }}>
+                <label htmlFor="">Forward to:</label>
+                <input
+                    type="text"
+                    value={forwardTo}
+                    onChange={(e) => setForwardTo(e.target.value)}
+                />
+                <input
+                    type="checkbox"
+                    disabled={!forwardTo}
+                    onChange={(e) => {
+                        const checked = e.target.checked;
+                        axiosClient.post("/toggle-forward-number", {
+                            number: checked ? forwardTo : "",
+                            disabled: !checked,
+                        });
+                    }}
+                />
             </div>
         </div>
     );

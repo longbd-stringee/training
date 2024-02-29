@@ -7,6 +7,9 @@ const { getAccessToken } = require("./utils");
 const app = express();
 
 const port = 8080;
+const hotline = "842471098552";
+let isForwarded = false;
+let forwardedNumber = "";
 
 let userIds = [];
 
@@ -51,24 +54,7 @@ app.get("/answer_url", (req, res) => {
         callTo = getAvailableUserId();
     }
 
-    // const scco = [
-    //     {
-    //         action: "connect",
-    //         from: {
-    //             type: "external",
-    //             number: from,
-    //             alias: "842471098552",
-    //         },
-    //         to: {
-    //             type: "external",
-    //             number: "84972105290",
-    //             alias: "84972105290",
-    //         },
-    //         customData: "test-custom-data",
-    //     },
-    // ];
-
-    const scco = [
+    let scco = [
         {
             action: "connect",
             from: {
@@ -84,6 +70,25 @@ app.get("/answer_url", (req, res) => {
             customData: "test-custom-data",
         },
     ];
+
+    if (isForwarded && forwardedNumber.trim()) {
+        scco = [
+            {
+                action: "connect",
+                from: {
+                    type: fromInternal === "true" ? "internal" : "external",
+                    number: from,
+                    alias: hotline,
+                },
+                to: {
+                    type: "external",
+                    number: forwardedNumber,
+                    alias: forwardedNumber,
+                },
+                customData: "test-custom-data",
+            },
+        ];
+    }
 
     return res.json(scco);
 });
@@ -120,6 +125,17 @@ app.post("/disconnect", (req, res) => {
     const { userId } = req.body;
 
     userIds = userIds.filter((id) => id !== userId);
+
+    return res.json({
+        data: true,
+    });
+});
+
+app.post("/toggle-forward-number", (req, res) => {
+    const { number, disabled } = req.body;
+
+    isForwarded = !disabled;
+    forwardedNumber = number;
 
     return res.json({
         data: true,
