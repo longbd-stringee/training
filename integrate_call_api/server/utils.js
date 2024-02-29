@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-const apiKeySid = "SK.0.IelGISYFk3odR5bgsrL5VPJrRKcYHAma";
-const apiKeySecret = "UmNOVHNvM3loS2xvNlRqY2VRT25WdEVGYVJ2ZFBHUXg=";
+const apiKeySid = "SK.0.x7KmUx2dzDi21T0yULwmL3AAszIzJON";
+const apiKeySecret = "aXNxMTBvOWYzVW41ZzFwdWU1N1dQVVFWTTJHZmJHbmY=";
 
 const getAccessToken = (userId, ttl = 3600 * 24) => {
     const now = Math.floor(Date.now() / 1000);

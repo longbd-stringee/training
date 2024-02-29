@@ -24,7 +24,7 @@ axiosClient.interceptors.response.use(
 function App() {
     const [accessToken, setAccessToken] = useState("");
     const [userId, setUserId] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("84911448457");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [toUserId, setToUserId] = useState("");
 
     const remoteVideo = useRef(null);
@@ -225,7 +225,7 @@ function App() {
                         }
                     }}
                 >
-                    Hang up
+                    Hangup
                 </button>
             </div>
         </div>

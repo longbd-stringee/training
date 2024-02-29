@@ -89,7 +89,7 @@ app.get("/answer_url", (req, res) => {
 });
 
 app.post("/project_event_url", (req, res) => {
-    // console.log("🚀 ~ project_event_url:", req.body);
+    console.log("🚀 ~ project_event_url:", req.body);
 
     return res.json({
         data: true,
@@ -97,7 +97,7 @@ app.post("/project_event_url", (req, res) => {
 });
 
 app.post("/event_url", (req, res) => {
-    // console.log("🚀 ~ event_url:", req.body);
+    console.log("🚀 ~ event_url:", req.body);
 
     return res.json({
         data: true,
