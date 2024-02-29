@@ -121,16 +121,6 @@ app.get("/access_token", (req, res) => {
     });
 });
 
-app.post("/disconnect", (req, res) => {
-    const { userId } = req.body;
-
-    userIds = userIds.filter((id) => id !== userId);
-
-    return res.json({
-        data: true,
-    });
-});
-
 app.post("/toggle-forward-number", (req, res) => {
     const { number, disabled } = req.body;
 

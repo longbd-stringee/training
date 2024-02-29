@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { StringeeCall, StringeeClient } from "stringee";
 import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { StringeeCall, StringeeClient } from "stringee";
 
 const hotline = "842471098552";
 const client = new StringeeClient();
@@ -45,12 +45,7 @@ function App() {
             });
     };
 
-    const handleDisconnect = useCallback(() => {
-        const userId = window.localStorage.getItem("userId");
-        axiosClient.post("/disconnect", { userId }).then(console.log);
-    }, []);
-
-    const settingCallEvent = useCallback((call1) => {
+    const settingCallEvent = (call1) => {
         call1.on("addremotestream", function (stream) {
             // reset srcObject to work around minor bugs in Chrome and Edge.
             remoteVideo.current.srcObject = null;
@@ -77,7 +72,7 @@ function App() {
         call1.on("info", function (info) {
             console.log("on info:" + JSON.stringify(info));
         });
-    }, []);
+    };
 
     const handleCallAppToPhone = () => {
         call.current = new StringeeCall(client, hotline, phoneNumber, false);
@@ -113,14 +108,6 @@ function App() {
             console.log("authen", res);
         });
 
-        client.on("disconnect", function () {
-            handleDisconnect();
-        });
-
-        window.onbeforeunload = function () {
-            handleDisconnect();
-        };
-
         client.on("incomingcall", function (incomingcall) {
             console.log("incomingcall", incomingcall);
             call.current = incomingcall;
@@ -140,7 +127,7 @@ function App() {
                 });
             }
         });
-    }, [handleDisconnect, settingCallEvent]);
+    }, []);
 
     if (!accessToken) {
         return (
