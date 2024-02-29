@@ -18,7 +18,7 @@ axiosClient.interceptors.response.use(
     },
     function (err) {
         return Promise.reject(err);
-    }
+    },
 );
 
 function App() {
@@ -115,7 +115,7 @@ function App() {
             var answer = confirm(
                 "Incoming call from: " +
                     incomingcall.fromNumber +
-                    ", do you want to answer?"
+                    ", do you want to answer?",
             );
             if (answer) {
                 call.current.answer(function (res) {
