@@ -22,11 +22,14 @@ axiosClient.interceptors.response.use(
 );
 
 function App() {
-    const [accessToken, setAccessToken] = useState("");
+    const [accessToken, setAccessToken] = useState(
+        window.localStorage.getItem("token") ?? ""
+    );
     const [userId, setUserId] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [toUserId, setToUserId] = useState("");
     const [forwardTo, setForwardTo] = useState("84819287888");
+    const [userInfo, setUserInfo] = useState(null);
 
     const remoteVideo = useRef(null);
     const localVideo = useRef(null);
@@ -38,7 +41,11 @@ function App() {
         axiosClient
             .get(`/access_token?userId=${userId}`)
             .then((res) => {
-                setAccessToken(res.data);
+                setTimeout(() => {
+                    window.localStorage.setItem("token", res.data);
+                    setUserId("");
+                    setAccessToken(res.data);
+                }, 3000);
             })
             .catch(() => {
                 alert("Login failed");
@@ -105,6 +112,7 @@ function App() {
         });
 
         client.on("authen", function (res) {
+            setUserInfo(res);
             console.log("authen", res);
         });
 
@@ -149,7 +157,24 @@ function App() {
 
     return (
         <div>
-            <center>User id: {userId}</center>
+            {!!userInfo && (
+                <div>
+                    <center>User id: {userInfo.userId}</center>
+                    <center>
+                        Username: {userInfo.displayName ?? userInfo.userId}
+                    </center>
+                    <center>
+                        <button
+                            onClick={() => {
+                                window.localStorage.removeItem("token");
+                                setAccessToken("");
+                            }}
+                        >
+                            Logout
+                        </button>
+                    </center>
+                </div>
+            )}
             <div>
                 <video
                     id="localVideo"
