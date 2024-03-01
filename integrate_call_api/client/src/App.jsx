@@ -30,6 +30,7 @@ function App() {
     const [toUserId, setToUserId] = useState("");
     const [forwardTo, setForwardTo] = useState("84819287888");
     const [userInfo, setUserInfo] = useState(null);
+    const [callStatus, setCallStatus] = useState("");
 
     const remoteVideo = useRef(null);
     const localVideo = useRef(null);
@@ -69,7 +70,7 @@ function App() {
         call1.on("signalingstate", function (state) {
             console.log("signalingstate ", state);
             const { reason } = state;
-            document.querySelector("#callStatus").textContent = reason;
+            setCallStatus(reason);
         });
 
         call1.on("mediastate", function (state) {
@@ -189,7 +190,7 @@ function App() {
                     autoPlay
                     style={{ width: "150px" }}
                 ></video>
-                <p id="callStatus"></p>
+                <p id="callStatus">{callStatus}</p>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
                 <label htmlFor="phone-input">Phone number:</label>
